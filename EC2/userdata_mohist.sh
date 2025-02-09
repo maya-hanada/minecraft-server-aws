@@ -82,7 +82,7 @@ sudo systemctl enable amazon-cloudwatch-agent
 sudo systemctl start amazon-cloudwatch-agent
 
 
-# *** INSERT SERVER DOWNLOAD URL BELOW(Latest MohistMC) ***
+# *** INSERT SERVER DOWNLOAD URL BELOW ***
 # Download the selected version of the MohistMC
 VERSION='1.20.1'
 MINECRAFTSERVERURL=https://mohistmc.com/api/v2/projects/mohist/$VERSION/builds/latest/download
