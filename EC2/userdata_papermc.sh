@@ -82,12 +82,20 @@ sudo systemctl enable amazon-cloudwatch-agent
 sudo systemctl start amazon-cloudwatch-agent
 
 
-# *** INSERT SERVER DOWNLOAD URL BELOW ***
-# Do not add any spaces between your link and the "=", otherwise it won't work. EG: MINECRAFTSERVERURL=https://urlexample
+# *** INSERT SERVER DOWNLOAD URL BELOW(Latest PaperMC) ***
 
+# Download the latest version of the script
+URL='https://api.papermc.io/v2/projects/paper'
 
-MINECRAFTSERVERURL=
+# Get the latest version
+VERSION=$(curl -X 'GET' $URL -H 'accept: application/json' | jq -r '.versions[-1]')
+echo "Latest version: $VERSION"
 
+# Get the latest build
+BUILD=$(curl -X 'GET' $URL/versions/$VERSION -H 'accept: application/json' | jq -r '.builds[-1]')
+echo "Latest build: $BUILD"
+
+MINECRAFTSERVERURL=$URL/versions/$VERSION/builds/$BUILD/downloads/paper-$VERSION-$BUILD.jar
 
 # Download Java
 sudo yum install -y java-17-amazon-corretto-headless
@@ -98,15 +106,15 @@ mkdir /opt/minecraft/server/
 cd /opt/minecraft/server
 
 # Download server jar file from Minecraft official website
-wget $MINECRAFTSERVERURL
+wget -O paper.jar $MINECRAFTSERVERURL
 
 # Generate Minecraft server files and create script
-java -Xmx1300M -Xms1300M -jar server.jar nogui
+java -Xmx1300M -Xms1300M -jar paper.jar nogui
 sleep 40
 sed -i 's/false/true/p' eula.txt
 touch start
 # Tune java heap size to fit your needs.
-printf '#!/bin/bash\njava -Xmx3G -Xms3G -jar server.jar nogui\n' >> start
+printf '#!/bin/bash\njava -Xmx3G -Xms3G -jar paper.jar nogui\n' >> start
 chmod +x start
 sleep 1
 touch stop
